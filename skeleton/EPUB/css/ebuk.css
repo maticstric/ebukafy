@@ -1,0 +1,14 @@
+h1, h2, h3, h4, h5, h6 {
+  font-variant: small-caps;
+  text-align: center;
+  margin: 3em 0;
+}
+
+p {
+  margin: 0;
+  text-indent: 1em;
+}
+
+p:first-child {
+  text-indent: 0;
+}
