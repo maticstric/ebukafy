@@ -2,7 +2,6 @@
  * Creates a skeleton of an epub directory.
  */
 
-const readline = require('readline');
 const path = require('path');
 const childProcess = require('child_process');
 const parseArgs = require('minimist');
@@ -19,7 +18,10 @@ exports.execute = async (args) => {
   args = processArgs(args);
 
   let targetDirectory = args._[0];
-  let rl = initReadline();
+
+  if (!targetDirectory) {
+    usage();
+  }
 
   let author = args.author;
   let title = args.title;
@@ -29,8 +31,6 @@ exports.execute = async (args) => {
   if (!uid) { // If no UID supplied, generate random
     uid = generateUID(UID_LENGTH);
   }
-
-  rl.close();
 
   await copySkeleton(targetDirectory);
   await replaceInSkeleton(targetDirectory, author, title, language, uid);
@@ -109,13 +109,6 @@ const processArgs = (args) => {
   }
 
   return args;
-}
-
-const initReadline = () => {
-  return readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-  });
 }
 
 const usage = () => {
