@@ -20,6 +20,8 @@ const main = async () => {
 const executeCommand = async (command, args) => {
   if (command === 'create-skeleton') {
     await commands.createSkeleton(args);
+  } else if (command === 'split') {
+    await commands.split(args);
   }
 }
 
