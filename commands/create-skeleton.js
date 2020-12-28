@@ -104,8 +104,6 @@ const processArgs = (args) => {
     ]
   });
 
-  console.log(args);
-
   if (args.help || !args.author || !args.title || !args.language) {
     usage();
   }
