@@ -6,10 +6,26 @@
 const path = require('path');
 const parseArgs = require('minimist');
 const fs = require('fs');
+const arabicToRoman = require('../utils/arabic-to-roman').arabicToRoman;
 
-const USAGE = 'usage: split [-h] target_file';
+const USAGE = 'usage: split [-h] [-l language] target_file';
 const SPLIT_TEXT = '<!--split-->';
 const ERR_STRING = 'Error in \'split\':';
+
+let chapterTemplate =
+`<?xml version="1.0" encoding="utf-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops" xml:lang="LANGUAGE">
+  <head>
+    <title>ROMAN</title>
+    <link href="../css/ebuk.css" rel="stylesheet" type="text/css"/>
+  </head>
+  <body epub:type="bodymatter">
+    <section id="chapter-ARABIC" epub:type="chapter">
+      <h2 epub:type="ordinal">ROMAN</h2>
+TEXT
+    </section>
+  </body>
+</html>`;
 
 exports.execute = async (args) => {
   args = processArgs(args);
@@ -18,6 +34,12 @@ exports.execute = async (args) => {
 
   if (!targetFile) {
     usage();
+  }
+
+  if (args.language) {
+    chapterTemplate = chapterTemplate.replace('LANGUAGE', args.language);
+  } else { // If no language given, just remove it
+    chapterTemplate = chapterTemplate.replace('\ xml:lang=\"LANGUAGE\"', '');
   }
 
   return new Promise((resolve, reject) => {
@@ -30,7 +52,10 @@ exports.execute = async (args) => {
       let chapters = data.split(SPLIT_TEXT);
 
       for (let i = 0; i < chapters.length; i++) {
-        let chapterContent = chapters[i];
+        let chapterContent = chapterTemplate.replace('TEXT', chapters[i].trim());
+        chapterContent = chapterContent.replace(/ARABIC/g, i + 1);
+        chapterContent = chapterContent.replace(/ROMAN/g, arabicToRoman(i + 1));
+
         let chapterName = 'chapter-' + (i + 1) + '.xhtml';
         let chapterPath = path.resolve(targetFile, '..', chapterName);
 
@@ -51,10 +76,14 @@ const processArgs = (args) => {
   args = parseArgs(args, {
     alias: {
       'help': 'h',
+      'language': 'l'
     },
     boolean: [
       'help'
     ],
+    string: [
+      'language'
+    ]
   });
 
   if (args.help) {
