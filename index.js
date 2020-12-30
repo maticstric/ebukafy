@@ -24,6 +24,8 @@ const executeCommand = async (command, args) => {
     await commands.split(args);
   } else if (command === 'build') {
     await commands.build(args);
+  } else if (command === 'epubcheck') {
+    await commands.epubcheck(args);
   }
 }
 
