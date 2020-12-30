@@ -33,13 +33,10 @@ exports.execute = async (args) => {
 const zipEpub = async (epubDirectory, outputFile) => {
   archive = setupArchiver(outputFile);
 
-  // Set to compression level to 0 for mimetype. Add mimetype
-  archive.options.zlib.level = 0;
+  // Add mimetype
   archive.file(path.resolve(epubDirectory,'mimetype'), { name: 'mimetype' });
 
-  // Everything besides mimetype can be compressed normally
   // Add META-INF and EPUB folders
-  archive.options.zlib.level = 9;
   archive.directory(path.resolve(epubDirectory, 'META-INF'), 'META-INF');
   archive.directory(path.resolve(epubDirectory, 'EPUB'), 'EPUB');
 
@@ -48,7 +45,7 @@ const zipEpub = async (epubDirectory, outputFile) => {
 
 const setupArchiver = (outputFile) => {
   const output = fs.createWriteStream(path.resolve(outputFile));
-  const archive = archiver('zip', {});
+  const archive = archiver('zip', { store: true });
 
   archive.on('error', (err) => {
     console.error(`\n${ERR_STRING} ${err}`);
