@@ -22,6 +22,8 @@ const executeCommand = async (command, args) => {
     await commands.createSkeleton(args);
   } else if (command === 'split') {
     await commands.split(args);
+  } else if (command === 'build') {
+    await commands.build(args);
   }
 }
 
