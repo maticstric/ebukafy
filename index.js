@@ -6,9 +6,6 @@ const commands = require('./commands');
 
 const USAGE = 'usage: ebukafy [-h] command [args ...]';
 
-const ROOT_DIR = path.dirname(require.main.filename);
-exports.ROOT_DIR = ROOT_DIR;
-
 const main = async () => {
   let args = processArgs();
 

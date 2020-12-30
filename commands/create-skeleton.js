@@ -5,7 +5,6 @@
 const path = require('path');
 const childProcess = require('child_process');
 const parseArgs = require('minimist');
-const index = require('../index');
 const generateUID = require('../utils/generate-uid').generateUID;
 const replaceInFile = require('../utils/replace-in-file').replaceInFile;
 
@@ -67,7 +66,7 @@ const copySkeleton = (targetDirectory) => {
    */
 
   return new Promise((resolve, reject) => {
-    let skeletonDir = path.resolve(index.ROOT_DIR, 'skeleton');
+    let skeletonDir = path.resolve(__dirname, '../skeleton');
     let cp = childProcess.spawn('cp', ['-r', skeletonDir, targetDirectory]);
 
     cp.stderr.on('data', (data) => {
