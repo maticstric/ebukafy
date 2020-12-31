@@ -8,7 +8,7 @@ const parseArgs = require('minimist');
 const generateUID = require('../utils/generate-uid').generateUID;
 const replaceInFile = require('../utils/replace-in-file').replaceInFile;
 
-const USAGE = 'usage: create-skeleton [-h] [-u uid] -a author -t title -l language target_directory';
+const USAGE = 'usage: create-skeleton [-h] [-u uid] -a author -l language -t title target_directory';
 const ERR_STRING = 'Error in \'create-skeleton\':';
 
 const UID_LENGTH = 32;
