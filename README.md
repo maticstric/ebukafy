@@ -10,6 +10,42 @@ A collection of tools used to convert html or txt files into ebooks.
 
 Note that to run any of these tools you need to preced them with `ebukafy` (e.g. if you want to run `create-skeleton`, you need to run `ebukafy create-skeleton`).
 
+- ### `ebukafy build`
+      NAME
+           build -- builds the epub directory into an epub file
+
+      SYNOPSIS
+           build [-h] [-o output_file] epub_directory
+
+      DESCRIPTION
+           This tool builds the epub directory into an actual epub file. Ignoring
+           a few important details, this is essentially done by zipping up 
+           the folder. Additionally, this updates the mandatory 'dcterms:modified'
+           value in the content.opf file.
+
+           The options are as follows:
+
+           -h       Display usage statement. 
+       
+           -o       Optional. Set the outputed epub to be called something
+                    other than 'output.epub', which is the default.
+
+      EXAMPLES
+           Note that the 'epub directory' is actually the parent directory of the
+           'EPUB' directory. In other words, the command should be run in this
+           directory:
+           
+           epub-directory/
+              mimetype
+              META-INF/
+                container.xml
+              EPUB/
+                [etc]
+
+           To build just go into 'epub-directory' and run 
+           
+                build -o homer_the-odyssey.epub .
+
 - ### `ebukafy create-skeleton`
       NAME
            create-skeleton -- creates a skeleton epub directory
@@ -46,3 +82,60 @@ Note that to run any of these tools you need to preced them with `ebukafy` (e.g.
                 create-skeleton -a Homer -l grc -t 'The Odyssey' .
 
            Note the '' around the title since it's two words.
+
+- ### `ebukafy epubcheck`
+      NAME
+           epubcheck -- checks for any errors regarding the epub specification
+
+      SYNOPSIS
+           epubcheck [-h] target_epub
+
+      DESCRIPTION
+           epubcheck is a tool which "validates the conformance of EPUB 
+           publications against the EPUB specifications." The GitHub repository
+           for epubcheck can be found here: https://github.com/w3c/epubcheck
+           Note that this tool is written in java so you need java to run it.
+           It will output any errors or just say that your epub is up to standard.
+
+           The options are as follows:
+
+           -h       Display usage statement. 
+
+      EXAMPLES
+           To check if your epub conforms to the epub standards just run
+           
+                epubcheck homer_the-odyssey.epub
+
+- ### `ebukafy split`
+      NAME
+           split -- split file at every '<!--split-->' into separate files
+
+      SYNOPSIS
+           split [-h] target_file
+
+      DESCRIPTION
+           This tool splits a file at every '<!--split-->' into chapter-n.xhtml, 
+           where n is just an index starting at 1. Oftentimes you start making
+           your ebook with a gigantic text/html file. It is much better practice 
+           to split your file into seperate chapters. This tool will also put in
+           the appropriate header information into each chapter-n.xhtml file
+           such as the chapter's roman numeral.
+
+           The options are as follows:
+
+           -h       Display usage statement. 
+
+      EXAMPLES
+           Say you have a file like this and you put in the splits like so
+
+                foofoo
+                <!--split-->
+                barbar
+                <!--split-->
+                bazbaz
+
+           This will result in three files, chapter-1.xhtml to chapter-3.xhtml.
+           Besides the header, the content of chapter-1.xhtml will be 'foofoo',
+           the content of chapter-2.xhtml will be 'barbar', and the content of
+           chapter-3.xhtml will be 'bazbaz'. The best way to see exactly what
+           this does is to try it with an example such as the one above.
