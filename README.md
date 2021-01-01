@@ -15,7 +15,7 @@ Note that to run any of these tools you need to preced them with `ebukafy` (e.g.
            create-skeleton -- creates a skeleton epub directory
 
       SYNOPSIS
-           create-skeleton [-h] [-u uid] -a author -l language -t title 
+           create-skeleton [-h] [-a author] [-u uid] -l language -t title 
            target_directory
 
       DESCRIPTION
@@ -28,11 +28,11 @@ Note that to run any of these tools you need to preced them with `ebukafy` (e.g.
 
            -h       Display usage statement. 
        
+           -a       Optional. Set the author of book. 
+
            -u       Optional. Set uid manually. If not set, it will be
                     randomly generated. A uid is mandatory according to the
                     epub standard.
-
-           -a       Set the author of book. 
 
            -l       Set the language of book. This should be the IANA language tag.
                     If you don't know the tag for a language look up 'IANA Language
@@ -43,9 +43,6 @@ Note that to run any of these tools you need to preced them with `ebukafy` (e.g.
       EXAMPLES
            To create an epub skeleton in the current working directory you can run
            
-               create-skeleton -a Homer -l grc -t 'The Odyssey' .
+                create-skeleton -a Homer -l grc -t 'The Odyssey' .
 
-           Note the '' around the title since it's two words. You can do that same
-           for the author if their name is made up of two words.
-               
-               
+           Note the '' around the title since it's two words.
