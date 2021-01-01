@@ -1,5 +1,5 @@
 /*
- * Split file at every <!--split--> into every chapter-n.xhtml, where
+ * Split file at every '<!--split-->' into every chapter-n.xhtml, where
  * n is just an index starting at 1.
  */
 
@@ -8,13 +8,13 @@ const parseArgs = require('minimist');
 const fs = require('fs');
 const arabicToRoman = require('../utils/arabic-to-roman').arabicToRoman;
 
-const USAGE = 'usage: split [-h] [-l language] target_file';
+const USAGE = 'usage: split [-h] target_file';
 const SPLIT_TEXT = '<!--split-->';
 const ERR_STRING = 'Error in \'split\':';
 
 let chapterTemplate =
 `<?xml version="1.0" encoding="utf-8"?>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops" xml:lang="LANGUAGE">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
   <head>
     <title>ROMAN</title>
     <link href="../css/ebuk.css" rel="stylesheet" type="text/css"/>
@@ -34,12 +34,6 @@ exports.execute = async (args) => {
 
   if (!targetFile) {
     usage();
-  }
-
-  if (args.language) {
-    chapterTemplate = chapterTemplate.replace('LANGUAGE', args.language);
-  } else { // If no language given, just remove it
-    chapterTemplate = chapterTemplate.replace('\ xml:lang=\"LANGUAGE\"', '');
   }
 
   return new Promise((resolve, reject) => {
@@ -75,14 +69,10 @@ exports.execute = async (args) => {
 const processArgs = (args) => {
   args = parseArgs(args, {
     alias: {
-      'help': 'h',
-      'language': 'l'
+      'help': 'h'
     },
     boolean: [
       'help'
-    ],
-    string: [
-      'language'
     ]
   });
 
