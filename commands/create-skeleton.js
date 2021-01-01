@@ -8,7 +8,7 @@ const parseArgs = require('minimist');
 const generateUID = require('../utils/generate-uid').generateUID;
 const replaceInFile = require('../utils/replace-in-file').replaceInFile;
 
-const USAGE = 'usage: create-skeleton [-h] [-u uid] -a author -l language -t title target_directory';
+const USAGE = 'usage: create-skeleton [-h] [-u uid] [-a author] -l language -t title target_directory';
 const ERR_STRING = 'Error in \'create-skeleton\':';
 
 const UID_LENGTH = 32;
@@ -27,10 +27,6 @@ exports.execute = async (args) => {
   let language = args.language;
   let uid = args.uid;
 
-  if (!uid) { // If no UID supplied, generate random
-    uid = generateUID(UID_LENGTH);
-  }
-
   await copySkeleton(targetDirectory);
   await replaceInSkeleton(targetDirectory, author, title, language, uid);
 }
@@ -47,6 +43,16 @@ const replaceInSkeleton = async (targetDirectory, author, title, language, uid) 
   let tocNcxPath = path.resolve(EPUBPath, 'toc.ncx');
   let tocXhtmlPath = path.resolve(EPUBPath, 'toc.xhtml');
   let chapterPath = path.resolve(EPUBPath, 'text', 'chapter-1.xhtml');
+
+  if (!uid) { // If no UID supplied, generate random
+    uid = generateUID(UID_LENGTH);
+  }
+
+  if (!author) { // If no author supplied, delete the dc:creator tag
+    await replaceInFile(contentOpfPath, 
+                          [/<dc:creator>AUTHOR<\/dc:creator>\r?\n\s*/g],
+                          ['']);
+  }
 
   await replaceInFile(contentOpfPath, 
                         [/AUTHOR/g, /TITLE/g, /LANGUAGE/g, /UID/g],
@@ -103,7 +109,7 @@ const processArgs = (args) => {
     ]
   });
 
-  if (args.help || !args.author || !args.title || !args.language) {
+  if (args.help || !args.title || !args.language) {
     usage();
   }
 
