@@ -6,6 +6,7 @@ const path = require('path');
 const parseArgs = require('minimist');
 const fs = require('fs');
 const archiver = require('archiver');
+const replaceInFile = require('../utils/replace-in-file').replaceInFile;
 
 const USAGE = 'usage: build [-h] [-o output_file] epub_directory';
 const ERR_STRING = 'Error in \'build\':';
@@ -26,6 +27,8 @@ exports.execute = async (args) => {
   } else { 
     outputFile = DEAFULT_OUTPUT_FILE;
   }
+
+  await updateDateModified(epubDirectory);
 
   await zipEpub(epubDirectory, outputFile);
 }
@@ -56,6 +59,16 @@ const zipEpub = async (epubDirectory, outputFile) => {
   archive.directory(path.resolve(epubDirectory, 'EPUB'), 'EPUB');
 
   archive.finalize();
+}
+
+const updateDateModified = async (epubDirectory) => {
+  const contentOpfPath = path.resolve(epubDirectory, 'EPUB', 'content.opf');
+  const currentTime = new Date().toISOString();
+
+  const searchRegex = /<meta\ property=\"dcterms:modified\">.*<\/meta>/g;
+  const replaceString = `<meta property="dcterms:modified">${currentTime}</meta>`;
+
+  await replaceInFile(contentOpfPath, [searchRegex], [replaceString]);
 }
 
 const setupArchiver = (outputFile) => {
