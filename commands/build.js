@@ -31,7 +31,22 @@ exports.execute = async (args) => {
 }
 
 const zipEpub = async (epubDirectory, outputFile) => {
-  archive = setupArchiver(outputFile);
+  //archive = setupArchiver(outputFile);
+
+  const output = fs.createWriteStream(path.resolve(outputFile));
+  const archive = archiver('zip', { zlib: { level: 0 }, store: true });
+
+  archive.on('error', (err) => {
+    console.error(`\n${ERR_STRING} ${err}`);
+    usage();
+  });
+
+  archive.on('warning', (err) => {
+    console.error(`\n${ERR_STRING} ${err}`);
+    usage();
+  });
+
+  archive.pipe(output);
 
   // Add mimetype
   archive.file(path.resolve(epubDirectory,'mimetype'), { name: 'mimetype' });
