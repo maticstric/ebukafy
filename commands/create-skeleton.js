@@ -58,12 +58,7 @@ const replaceInSkeleton = async (targetDirectory, author, title, language, uid) 
                         [/AUTHOR/g, /TITLE/g, /LANGUAGE/g, /UID/g],
                         [author, title, language, uid]);
 
-  await replaceInFile(tocNcxPath,
-                        [/LANGUAGE/g, /UID/g],
-                        [language, uid]);
-
-  await replaceInFile(tocXhtmlPath, [/LANGUAGE/g], [language]);
-  await replaceInFile(chapterPath, [/LANGUAGE/g], [language]);
+  await replaceInFile(tocNcxPath, [/UID/g], [uid]);
 }
 
 const copySkeleton = (targetDirectory) => {
