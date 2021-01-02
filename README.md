@@ -6,6 +6,22 @@ A collection of tools used to convert html or txt files into ebooks.
 
 `npm install ebukafy --save`
 
+# Usage
+
+`ebukafy [-h] command [args ...]`
+
+To use ebukafy look at the list of commands/tools in the [Tools](#tools) section below. The arguments needed change based on the command.
+
+Normal use of `ebukafy` would look something like this:
+
+1. Download some html that you want to convert into an ebook with a tool like `wget`
+2. Run `ebukafy create-skeleton` to create a skeleton of an epub directory
+3. Put the downloaded html into the EPUB/text directory of the skeleton
+4. Run `ebukafy split` to split the big html file into multiple files with correct headers
+5. Manually (for now) edit the `content.opf`, `toc.xhtml`, and `toc.ncx` files. The skeleton includes an example chapter to show you the way these files should look. If you don't know anything about the internals of an epub this step will be difficult but it's much easier that it sounds. Just look up 'anatomy of an epub file' and read up
+6. After everything is done run `ebukafy build` to build this epub folder into an actual epub file
+7. Before reading make sure to run `ebukafy epubcheck` to make sure everything within the epub is up to the specification of the epub standard
+
 # Tools
 
 Note that to run any of these tools you need to preced them with `ebukafy` (e.g. if you want to run `create-skeleton`, you need to run `ebukafy create-skeleton`).
