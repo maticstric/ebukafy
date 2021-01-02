@@ -36,8 +36,8 @@ exports.execute = async (args) => {
 const zipEpub = async (epubDirectory, outputFile) => {
   //archive = setupArchiver(outputFile);
 
-  const output = fs.createWriteStream(path.resolve(outputFile));
-  const archive = archiver('zip', { zlib: { level: 0 }, store: true });
+  let output = fs.createWriteStream(path.resolve(outputFile));
+  let archive = archiver('zip', { zlib: { level: 0 }, store: true });
 
   archive.on('error', (err) => {
     console.error(`\n${ERR_STRING} ${err}`);
@@ -62,18 +62,20 @@ const zipEpub = async (epubDirectory, outputFile) => {
 }
 
 const updateDateModified = async (epubDirectory) => {
-  const contentOpfPath = path.resolve(epubDirectory, 'EPUB', 'content.opf');
-  const currentTime = new Date().toISOString();
+  let contentOpfPath = path.resolve(epubDirectory, 'EPUB', 'content.opf');
+  let currentTime = new Date().toISOString();
 
-  const searchRegex = /<meta\ property=\"dcterms:modified\">.*<\/meta>/g;
-  const replaceString = `<meta property="dcterms:modified">${currentTime}</meta>`;
+  currentTime = currentTime.split('.')[0] + 'Z'; // epub doesn't like the ms
+
+  let searchRegex = /<meta\ property=\"dcterms:modified\">.*<\/meta>/g;
+  let replaceString = `<meta property="dcterms:modified">${currentTime}</meta>`;
 
   await replaceInFile(contentOpfPath, [searchRegex], [replaceString]);
 }
 
 const setupArchiver = (outputFile) => {
-  const output = fs.createWriteStream(path.resolve(outputFile));
-  const archive = archiver('zip', { store: true });
+  let output = fs.createWriteStream(path.resolve(outputFile));
+  let archive = archiver('zip', { store: true });
 
   archive.on('error', (err) => {
     console.error(`\n${ERR_STRING} ${err}`);
