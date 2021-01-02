@@ -1,0 +1,29 @@
+{
+  "name": "ebukafy",
+  "version": "2.0.0",
+  "description": "A collection of tools used to covert html or txt files into ebooks.",
+  "main": "index.js",
+  "dependencies": {
+    "archiver": "^5.1.0",
+    "minimist": "^1.2.5"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/maticstric/ebukafy.git"
+  },
+  "keywords": [
+    "ebook",
+    "epub",
+    "tools"
+  ],
+  "author": "maticstric",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/maticstric/ebukafy/issues"
+  },
+  "homepage": "https://github.com/maticstric/ebukafy#readme"
+}
