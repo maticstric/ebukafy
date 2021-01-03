@@ -3,11 +3,12 @@
 const parseArgs = require('minimist');
 const path = require('path');
 const commands = require('./commands');
+const getPackageVersion = require('./utils/get-package-version').getPackageVersion;
 
-const USAGE = 'usage: ebukafy [-h] command [args ...]';
+const USAGE = 'usage: ebukafy [-hv] command [args ...]';
 
 const main = async () => {
-  let args = processArgs();
+  let args = await processArgs();
 
   let command = args._[0];
 
@@ -26,18 +27,26 @@ const executeCommand = async (command, args) => {
   }
 }
 
-const processArgs = () => {
+const processArgs = async () => {
   let args = process.argv.slice(2);
 
   args = parseArgs(args, {
     alias: {
-      'help': 'h'
+      'help': 'h',
+      'version': 'v'
     },
     boolean: [
-      'help'
+      'help',
+      'version'
     ],
     stopEarly: true // Stops at first non-option. Puts the rest into ._
   });
+
+  if (args.version) {
+    let version = await getPackageVersion(path.resolve(__dirname, 'package.json'));
+
+    console.log(version);
+  }
 
   if (args.help) {
     usage();

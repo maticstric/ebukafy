@@ -8,7 +8,7 @@ A collection of tools used to convert html or txt files into ebooks.
 
 # Usage
 
-`ebukafy [-h] command [args ...]`
+`ebukafy [-hv] command [args ...]`
 
 To use ebukafy look at the list of commands/tools in the [Tools](#tools) section below. The arguments needed change based on the command.
 
