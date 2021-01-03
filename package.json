@@ -1,6 +1,6 @@
 {
   "name": "ebukafy",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "A collection of tools used to covert html or txt files into ebooks.",
   "main": "index.js",
   "dependencies": {
@@ -25,5 +25,5 @@
   "bugs": {
     "url": "https://github.com/maticstric/ebukafy/issues"
   },
-  "homepage": "https://github.com/maticstric/ebukafy#readme"
+  "homepage": "https://github.com/maticstric/ebukafy"
 }
