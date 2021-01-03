@@ -20,7 +20,7 @@ Normal use of `ebukafy` would look something like this:
 4. Run `ebukafy split` to split the big html file into multiple files with correct headers
 5. Manually (for now) edit the `content.opf`, `toc.xhtml`, and `toc.ncx` files. The skeleton includes an example chapter to show you the way these files should look. If you don't know anything about the internals of an epub this step will be difficult but it's much easier that it sounds. Just look up 'anatomy of an epub file' and read up
 6. After everything is done run `ebukafy build` to build this epub folder into an actual epub file
-7. Before reading make sure to run `ebukafy epubcheck` to make sure everything within the epub is up to the specification of the epub standard
+7. Before reading run `ebukafy epubcheck` to make sure everything within the epub is up to the specification of the epub standard
 8. To read on a kobo or kindle please use a tool like [Calibre](https://calibre-ebook.com/) to convert the book to the approriate format (kepub and azw3/mobi respectively)
 
 # Tools
