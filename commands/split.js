@@ -15,16 +15,16 @@ const ERR_STRING = 'Error in \'split\':';
 let chapterTemplate =
 `<?xml version="1.0" encoding="utf-8"?>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
-  <head>
-    <title>ROMAN</title>
-    <link href="../css/ebuk.css" rel="stylesheet" type="text/css"/>
-  </head>
-  <body epub:type="bodymatter">
-    <section id="chapter-ARABIC" epub:type="chapter">
-      <h2 epub:type="ordinal">ROMAN</h2>
+\t<head>
+\t\t<title>ROMAN</title>
+\t\t<link href="../css/ebuk.css" rel="stylesheet" type="text/css"/>
+\t</head>
+\t<body epub:type="bodymatter">
+\t\t<section id="chapter-ARABIC" epub:type="chapter">
+\t\t\t<h2 epub:type="ordinal">ROMAN</h2>
 TEXT
-    </section>
-  </body>
+\t\t</section>
+\t</body>
 </html>`;
 
 exports.execute = async (args) => {
