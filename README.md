@@ -16,11 +16,11 @@ Normal use of `ebukafy` would look something like this:
 
 1. Download some html that you want to convert into an ebook with a tool like `wget`
 2. Run `ebukafy create-skeleton` to create a skeleton of an epub directory
-3. Put the downloaded html into the EPUB/text directory of the skeleton
+3. Put the downloaded html into the `EPUB/text` directory of the skeleton
 4. Run `ebukafy split` to split the big html file into multiple files with correct headers
-5. After all the xhtml files in the EPUB/text directory are as you want them to be, run `ebukafy generate-manifest` and `ebukafy generate-spine` to populate the manifest and spine tags in the `content.opf` file. While the manifest should be good as is, the spine needs to be reorder *in reading order*, not alphabetical as is the deafult. This is also a good time to add any extra metadata you might find useful in the metadata tag in the `content.opf` file. [Here](https://wiki.mobileread.com/wiki/Metadata#ePUB_metadata) are some examples of what you can add
+5. After all the xhtml files in the `EPUB/text` directory are as you want them to be, run `ebukafy generate-manifest` and `ebukafy generate-spine` to populate the manifest and spine tags in the `content.opf` file. While the manifest should be good as is, the spine needs to be reordered *in reading order*, not alphabetical as is the deafult (more info in the [generate-spine README](#ebukafy-generate-spine)). This is also a good time to add any extra metadata you might find useful in the metadata tag in the `content.opf` file. [Here](https://wiki.mobileread.com/wiki/Metadata#ePUB_metadata) are some examples of what you can add
 6. Manually (for now) edit the `toc.xhtml` and `toc.ncx` files. The skeleton includes an example chapter to show you the way these files should look. If you don't know anything about the internals of an epub this step will be difficult but it's easier that it sounds. Just look up 'anatomy of an epub file' and read up
-7. Optionally replace the cover image. The one provided in the skeleton is just an all black 1400 x 2100 jpg. To change it just replace the cover in the EPUB/images directory. Keep the name as `cover.jpg` or manually edit `content.opf` if you know what you're doing
+7. Optionally replace the cover image. The one provided in the skeleton is just an all black 1400 x 2100 jpg. To change it just replace the cover in the `EPUB/images` directory. Keep the name as `cover.jpg` or manually edit `content.opf` if you know what you're doing
 8. After everything is done run `ebukafy build` to build this epub folder into an actual epub file
 9. Before reading run `ebukafy epubcheck` to make sure everything within the epub is up to the specification of the epub standard
 10. To read on a kobo or kindle please use a tool like [Calibre](https://calibre-ebook.com/) to convert the book to the approriate format (kepub and azw3 respectively)
@@ -175,10 +175,11 @@ Note that to run any of these tools you need to preced them with `ebukafy` (e.g.
            it just outputs this into stdout. With the 'i' option it replaces 
            the spine in-place.
 
-           NOTE: You will most likely want to reorder the spine. By default it
-           will order the spine in alphabetical order. As a result 
+           NOTE: You will most likely want to manually reorder the spine. By 
+           default it will order the spine in alphabetical order. So, for example,
            'chapter-10.xhtml' will come before 'chapter-2.xhtml'. However, 
-           the spine needs to be in the order that the book is supposed to be read.
+           the spine needs to be in the order that the book is supposed to be read,
+           so 'chapter-2.xhtml' should come before 'chapter-10.xhtml'.
 
            The options are as follows:
 
