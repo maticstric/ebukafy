@@ -1,6 +1,6 @@
 # ebukafy
 
-A collection of tools used to convert html or txt files into ebooks.
+A collection of tools used to convert html or text files into ebooks.
 
 # Installation
 
@@ -17,17 +17,18 @@ Normal use of `ebukafy` would look something like this:
 1. Download some html that you want to convert into an ebook with a tool like `wget`
 2. Run `ebukafy create-skeleton` to create a skeleton of an epub directory
 3. Put the downloaded html into the `EPUB/text` directory of the skeleton
-4. Run `ebukafy split` to split the big html file into multiple files with correct headers
-5. After all the xhtml files in the `EPUB/text` directory are as you want them to be, run `ebukafy generate-manifest` and `ebukafy generate-spine` to populate the manifest and spine tags in the `content.opf` file. While the manifest should be good as is, the spine needs to be reordered *in reading order*, not alphabetical as is the default (more info in the [generate-spine README](#ebukafy-generate-spine)). This is also a good time to add any extra metadata you might find useful in the metadata tag in the `content.opf` file. [Here](https://wiki.mobileread.com/wiki/Metadata#ePUB_metadata) are some examples of what you can add
-6. Manually (for now) edit the `toc.xhtml` and `toc.ncx` files. The skeleton includes an example chapter to show you the way these files should look. If you don't know anything about the internals of an epub this step will be difficult but it's easier that it sounds. Just look up 'anatomy of an epub file' and read up
-7. Optionally replace the cover image. The one provided in the skeleton is just an all black 1400 x 2100 jpg. To change it just replace the cover in the `EPUB/images` directory. Keep the name as `cover.jpg` or manually edit `content.opf` if you know what you're doing
-8. After everything is done run `ebukafy build` to build this epub folder into an actual epub file
-9. Before reading run `ebukafy epubcheck` to make sure everything within the epub is up to the specification of the epub standard
-10. To read on a kobo or kindle please use a tool like [Calibre](https://calibre-ebook.com/) to convert the book to the approriate format (kepub and azw3 respectively)
+4. Since most html files online will have a bunch of cruft at the beginning of the book, at the end of the book, and between the chapters, remove everything that you won't need. You essentially just want to keep all the paragraph tags, the actual text of the book.
+5. Run `ebukafy split` to split the big html file into multiple files with correct headers
+6. After all the xhtml files in the `EPUB/text` directory are as you want them to be, run `ebukafy generate-manifest` and `ebukafy generate-spine` to populate the manifest and spine tags in the `content.opf` file. While the manifest should be good as is, the spine needs to be reordered *in reading order*, not alphabetical as is the default (more info in the [generate-spine README](#ebukafy-generate-spine)). This is also a good time to add any extra metadata you might find useful in the metadata tag of the `content.opf` file. [Here](https://wiki.mobileread.com/wiki/Metadata#ePUB_metadata) are some examples of what you can add
+7. Manually (for now) edit the `toc.xhtml` and `toc.ncx` files. The skeleton includes an example chapter to show you the way these files should look. If you don't know anything about the internals of an epub this step will be difficult but it's easier that it sounds. Just look up 'anatomy of an epub file' and read up
+8. Optionally replace the cover image. The one provided in the skeleton is just an all black 1400 x 2100 jpg. To change it just replace the cover in the `EPUB/images` directory. Keep the name as `cover.jpg` or manually edit `content.opf` if you know what you're doing
+9. After everything is done run `ebukafy build` to build this epub folder into an actual epub file
+10. Before reading run `ebukafy epubcheck` to make sure everything within the epub is up to the specification of the epub standard
+11. To read on a kobo or kindle please use a tool like [Calibre](https://calibre-ebook.com/) to convert the book to the appropriate format (kepub and azw3 respectively)
 
 # Tools
 
-Note that to run any of these tools you need to preced them with `ebukafy` (e.g. if you want to run `create-skeleton`, you need to run `ebukafy create-skeleton`).
+Note that to run any of these tools you need to precede them with `ebukafy` (e.g. if you want to run `create-skeleton`, you need to run `ebukafy create-skeleton`).
 
 - ### `ebukafy build`
       NAME
@@ -83,15 +84,15 @@ Note that to run any of these tools you need to preced them with `ebukafy` (e.g.
 
            -h       Display usage statement. 
        
-           -a       Optional. Set the author of book. 
+           -a       Optional. Set the author of the book. 
 
            -u       Optional. Set uid manually. If not set, it will be
                     randomly generated. A uid is mandatory according to the
                     epub standard.
 
-           -l       Set the language of book. This should be the IANA language tag.
-                    If you don't know the tag for a language look up 'IANA Language
-                    Subtag Registry'.
+           -l       Set the language of the book. This should be the IANA language
+                    tag. If you don't know the tag for a language look up 'IANA 
+                    Language Subtag Registry'.
 
            -t       Set the title of the book.
 
@@ -143,7 +144,7 @@ Note that to run any of these tools you need to preced them with `ebukafy` (e.g.
 
            -h       Display usage statement. 
 
-           -i       Instead of outputing the manifest into stdout, it overwrites
+           -i       Instead of outputting the manifest into stdout, it overwrites
                     the manifest in the actual content.opf file, in-place.
 
       EXAMPLES
@@ -185,7 +186,7 @@ Note that to run any of these tools you need to preced them with `ebukafy` (e.g.
 
            -h       Display usage statement. 
 
-           -i       Instead of outputing the spine into stdout, it overwrites
+           -i       Instead of outputting the spine into stdout, it overwrites
                     the spine in the actual content.opf file, in-place.
 
       EXAMPLES
@@ -217,7 +218,7 @@ Note that to run any of these tools you need to preced them with `ebukafy` (e.g.
            This tool splits a file at every '<!--split-->' into chapter-n.xhtml, 
            where n is just an index starting at 1. Oftentimes you start making
            your ebook with a gigantic text/html file. It is much better practice 
-           to split your file into seperate chapters. This tool will also put in
+           to split your file into separate chapters. This tool will also put in
            the appropriate header information into each chapter-n.xhtml file
            such as the chapter's roman numeral.
 
