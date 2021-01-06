@@ -1,6 +1,6 @@
 {
   "name": "ebukafy",
-  "version": "2.0.1",
+  "version": "2.1.0",
   "description": "A collection of tools used to covert html or txt files into ebooks.",
   "main": "index.js",
   "dependencies": {
