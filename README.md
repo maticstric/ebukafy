@@ -18,7 +18,7 @@ Normal use of `ebukafy` would look something like this:
 2. Run `ebukafy create-skeleton` to create a skeleton of an epub directory
 3. Put the downloaded html into the `EPUB/text` directory of the skeleton
 4. Run `ebukafy split` to split the big html file into multiple files with correct headers
-5. After all the xhtml files in the `EPUB/text` directory are as you want them to be, run `ebukafy generate-manifest` and `ebukafy generate-spine` to populate the manifest and spine tags in the `content.opf` file. While the manifest should be good as is, the spine needs to be reordered *in reading order*, not alphabetical as is the deafult (more info in the [generate-spine README](#ebukafy-generate-spine)). This is also a good time to add any extra metadata you might find useful in the metadata tag in the `content.opf` file. [Here](https://wiki.mobileread.com/wiki/Metadata#ePUB_metadata) are some examples of what you can add
+5. After all the xhtml files in the `EPUB/text` directory are as you want them to be, run `ebukafy generate-manifest` and `ebukafy generate-spine` to populate the manifest and spine tags in the `content.opf` file. While the manifest should be good as is, the spine needs to be reordered *in reading order*, not alphabetical as is the default (more info in the [generate-spine README](#ebukafy-generate-spine)). This is also a good time to add any extra metadata you might find useful in the metadata tag in the `content.opf` file. [Here](https://wiki.mobileread.com/wiki/Metadata#ePUB_metadata) are some examples of what you can add
 6. Manually (for now) edit the `toc.xhtml` and `toc.ncx` files. The skeleton includes an example chapter to show you the way these files should look. If you don't know anything about the internals of an epub this step will be difficult but it's easier that it sounds. Just look up 'anatomy of an epub file' and read up
 7. Optionally replace the cover image. The one provided in the skeleton is just an all black 1400 x 2100 jpg. To change it just replace the cover in the `EPUB/images` directory. Keep the name as `cover.jpg` or manually edit `content.opf` if you know what you're doing
 8. After everything is done run `ebukafy build` to build this epub folder into an actual epub file
@@ -136,7 +136,7 @@ Note that to run any of these tools you need to preced them with `ebukafy` (e.g.
            This tool generates the manifest part of the content.opf file. It goes
            through the text, css, and images folders and the toc.ncx and toc.xhtml
            files and adds them as items between the two manifest tags. Without the
-           'i' option it just outputs this into stdout. With the 'i' option it
+           'i' option it just prints it to stdout. With the 'i' option it
            replaces the manifest in-place.
 
            The options are as follows:
@@ -172,7 +172,7 @@ Note that to run any of these tools you need to preced them with `ebukafy` (e.g.
       DESCRIPTION
            This tool generates the spine part of the content.opf file. It does
            this simply by going through the text folder. Without the 'i' option
-           it just outputs this into stdout. With the 'i' option it replaces 
+           it just prints it to stdout. With the 'i' option it replaces 
            the spine in-place.
 
            NOTE: You will most likely want to manually reorder the spine. By 
