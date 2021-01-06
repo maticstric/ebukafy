@@ -204,6 +204,8 @@ Note that to run any of these tools you need to preced them with `ebukafy` (e.g.
            
                 generate-spine -i .
 
+           And don't forget to manually reorder it into reading order!
+
 - ### `ebukafy split`
       NAME
            split -- split file at every '<!--split-->' into separate files
