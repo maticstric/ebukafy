@@ -124,6 +124,43 @@ Note that to run any of these tools you need to preced them with `ebukafy` (e.g.
            
                 epubcheck homer_the-odyssey.epub
 
+- ### `ebukafy generate-manifest`
+      NAME
+           generate-manifest -- generates the manifest part of the content.opf file
+
+      SYNOPSIS
+           generate-manifest [-hi] epub_directory
+
+      DESCRIPTION
+           This tool generates the manifest part of the content.opf file. It goes
+           through the text, css, and images folders and the toc.ncx and toc.xhtml
+           files and adds them as items between the two manifest tags. Without the
+           'i' option is just outputs this into stdout. With the 'i' option it
+           replaces the manifest in place.
+
+           The options are as follows:
+
+           -h       Display usage statement. 
+
+           -i       Instead of outputing the manifest into stdout, it overwrites
+                    the manifest in the actual content.opf file, in place.
+
+      EXAMPLES
+           Note that the 'epub directory' is actually the parent directory of the
+           'EPUB' directory. In other words, the command should be run in this
+           directory:
+           
+           epub-directory/
+              mimetype
+              META-INF/
+                container.xml
+              EPUB/
+                [etc]
+
+           To generate the manifest just go into 'epub-directory' and run 
+           
+                generate-manifest -i .
+
 - ### `ebukafy split`
       NAME
            split -- split file at every '<!--split-->' into separate files
