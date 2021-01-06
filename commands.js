@@ -6,6 +6,7 @@ const createSkeleton = require('./commands/create-skeleton');
 const split = require('./commands/split');
 const build = require('./commands/build');
 const epubcheck = require('./commands/epubcheck');
+const generateManifest = require('./commands/generate-manifest');
 
 exports.createSkeleton = async (args) => { 
   await createSkeleton.execute(args);
@@ -21,4 +22,8 @@ exports.build = async (args) => {
 
 exports.epubcheck = async (args) => { 
   await epubcheck.execute(args);
+};
+
+exports.generateManifest = async (args) => { 
+  await generateManifest.execute(args);
 };

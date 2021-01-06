@@ -24,6 +24,8 @@ const executeCommand = async (command, args) => {
     await commands.build(args);
   } else if (command === 'epubcheck') {
     await commands.epubcheck(args);
+  } else if (command === 'generate-manifest') {
+    await commands.generateManifest(args);
   }
 }
 
