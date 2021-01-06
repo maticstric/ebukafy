@@ -18,7 +18,8 @@ Normal use of `ebukafy` would look something like this:
 2. Run `ebukafy create-skeleton` to create a skeleton of an epub directory
 3. Put the downloaded html into the EPUB/text directory of the skeleton
 4. Run `ebukafy split` to split the big html file into multiple files with correct headers
-5. Manually (for now) edit the `content.opf`, `toc.xhtml`, and `toc.ncx` files. The skeleton includes an example chapter to show you the way these files should look. If you don't know anything about the internals of an epub this step will be difficult but it's easier that it sounds. Just look up 'anatomy of an epub file' and read up
+5. After all the xhtml files in the EPUB/text directory are as you want them to be, run `ebukafy generate-manifest` and `ebukafy generate-spine` to populate the manifest and spine tags in the `content.opf` file. While the manifest should be good as is, the spine needs to be reorder *in reading order*, not alphabetical as is the deafult. This is also a good time to add any extra metadata you might find useful in the metadata tag in the `content.opf` file. [Here](https://wiki.mobileread.com/wiki/Metadata#ePUB_metadata) are some examples of what you can add
+5. Manually (for now) edit the `toc.xhtml` and `toc.ncx` files. The skeleton includes an example chapter to show you the way these files should look. If you don't know anything about the internals of an epub this step will be difficult but it's easier that it sounds. Just look up 'anatomy of an epub file' and read up
 6. Optionally replace the cover image. The one provided in the skeleton is just an all black 1400 x 2100 jpg. To change it just replace the cover in the EPUB/images directory. Keep the name as `cover.jpg` or manually edit the `content.opf`.
 8. After everything is done run `ebukafy build` to build this epub folder into an actual epub file
 7. Before reading run `ebukafy epubcheck` to make sure everything within the epub is up to the specification of the epub standard
@@ -135,15 +136,15 @@ Note that to run any of these tools you need to preced them with `ebukafy` (e.g.
            This tool generates the manifest part of the content.opf file. It goes
            through the text, css, and images folders and the toc.ncx and toc.xhtml
            files and adds them as items between the two manifest tags. Without the
-           'i' option is just outputs this into stdout. With the 'i' option it
-           replaces the manifest in place.
+           'i' option it just outputs this into stdout. With the 'i' option it
+           replaces the manifest in-place.
 
            The options are as follows:
 
            -h       Display usage statement. 
 
            -i       Instead of outputing the manifest into stdout, it overwrites
-                    the manifest in the actual content.opf file, in place.
+                    the manifest in the actual content.opf file, in-place.
 
       EXAMPLES
            Note that the 'epub directory' is actually the parent directory of the
@@ -160,6 +161,47 @@ Note that to run any of these tools you need to preced them with `ebukafy` (e.g.
            To generate the manifest just go into 'epub-directory' and run 
            
                 generate-manifest -i .
+
+- ### `ebukafy generate-spine`
+      NAME
+           generate-spine -- generates the spine part of the content.opf file
+
+      SYNOPSIS
+           generate-spine [-hi] epub_directory
+
+      DESCRIPTION
+           This tool generates the spine part of the content.opf file. It does
+           this simply by going through the text folder. Without the 'i' option
+           it just outputs this into stdout. With the 'i' option it replaces 
+           the spine in-place.
+
+           NOTE: You will most likely want to reorder the spine. By default it
+           will order the spine in alphabetical order. As a result 
+           'chapter-10.xhtml' will come before 'chapter-2.xhtml'. However, 
+           the spine needs to be in the order that the book is supposed to be read.
+
+           The options are as follows:
+
+           -h       Display usage statement. 
+
+           -i       Instead of outputing the spine into stdout, it overwrites
+                    the spine in the actual content.opf file, in-place.
+
+      EXAMPLES
+           Note that the 'epub directory' is actually the parent directory of the
+           'EPUB' directory. In other words, the command should be run in this
+           directory:
+           
+           epub-directory/
+              mimetype
+              META-INF/
+                container.xml
+              EPUB/
+                [etc]
+
+           To generate the spine just go into 'epub-directory' and run 
+           
+                generate-spine -i .
 
 - ### `ebukafy split`
       NAME
