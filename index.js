@@ -28,6 +28,11 @@ const executeCommand = async (command, args) => {
     await commands.generateManifest(args);
   } else if (command === 'generate-spine') {
     await commands.generateSpine(args);
+  } else if (command === 'smarten-quotes') {
+    await commands.smartenQuotes(args);
+  } else {
+    console.error(`No such command: '${command}'.`);
+    usage();
   }
 }
 
