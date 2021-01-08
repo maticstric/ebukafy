@@ -12,7 +12,9 @@ const main = async () => {
 
   let command = args._[0];
 
-  await executeCommand(command, args._.slice(1));
+  if (command) {
+    await executeCommand(command, args._.slice(1));
+  }
 }
 
 const executeCommand = async (command, args) => {
