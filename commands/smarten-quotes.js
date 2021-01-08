@@ -11,18 +11,26 @@ const path = require('path');
 
 const replaceInFile = require('../utils/replace-in-file').replaceInFile;
 
-const USAGE = 'usage: smarten-quotes [-h] target_file';
+const USAGE = 'usage: smarten-quotes [-h] target_file ...';
 const ERR_STRING = 'Error in \'smarten-quotes\':';
 
 exports.execute = async (args) => {
   args = processArgs(args);
 
-  let targetFile = args._[0];
+  let targetFiles = args._;
 
-  if (!targetFile) {
+  if (!targetFiles) {
     usage();
   }
 
+  for (let i = 0; i < targetFiles.length; i++) {
+    targetFile = targetFiles[i];
+
+    smartenQuotes(targetFile);
+  }
+}
+
+const smartenQuotes = (targetFile) => {
   return new Promise((resolve, reject) => {
     fs.readFile(targetFile, 'utf8', function(err, data) {
       if (err) {
