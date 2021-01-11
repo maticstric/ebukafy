@@ -38,7 +38,7 @@ const smartenQuotes = (targetFile) => {
         usage();
       }
 
-      let regexInsidePTag = /<p>(.*)<\/p>/gs;
+      let regexInsidePTag = /<p>(.*)<\/p>/g;
       let oldParagraphs = Array.from(data.matchAll(regexInsidePTag));
       oldParagraphs = oldParagraphs.map((p, i) => oldParagraphs[i][1]);
 
