@@ -10,8 +10,8 @@
 	</metadata>
 	<manifest>
 		<item href="images/cover.jpg" id="cover.jpg" media-type="image/jpeg"/>
-		<item href="toc.xhtml" id="toc.xhtml" media-type="application/xhtml+xml" properties="nav"/>
 		<item href="toc.ncx" id="ncx" media-type="application/x-dtbncx+xml"/>
+		<item href="toc.xhtml" id="toc.xhtml" media-type="application/xhtml+xml" properties="nav"/>
 		<item href="css/ebuk.css" id="ebuk.css" media-type="text/css"/>
 		<item href="text/chapter-1.xhtml" id="chapter-1.xhtml" media-type="application/xhtml+xml"/>
 	</manifest>
