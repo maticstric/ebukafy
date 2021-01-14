@@ -8,6 +8,7 @@
 const fs = require('fs');
 const parseArgs = require('minimist');
 const path = require('path');
+const smartquotes = require('smartquotes');
 
 const replaceInFile = require('../utils/replace-in-file').replaceInFile;
 
@@ -45,15 +46,7 @@ const smartenQuotes = (targetFile) => {
       let newParagraphs = [];
 
       for (let i = 0; i < oldParagraphs.length; i++) {
-        let text = oldParagraphs[i];
-
-        text = text.replace(/\"(\S)/g, '“$1'); // Double quotes
-        text = text.replace(/(\S)\"/g, '$1”');
-
-        text = text.replace(/\'(\S)/g, '‘$1'); // Single quotes
-        text = text.replace(/(\S)\'/g, '$1’');
-
-        newParagraphs[i] = text;
+        newParagraphs[i] = smartquotes.string(oldParagraphs[i]);
       }
 
       replaceInFile(targetFile, oldParagraphs, newParagraphs).then(() => {
