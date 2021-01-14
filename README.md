@@ -19,12 +19,13 @@ Normal use of `ebukafy` would look something like this:
 3. Put the downloaded html into the `EPUB/text` directory of the skeleton
 4. Since most html files online will have a bunch of cruft at the beginning of the book, at the end of the book, and between the chapters, remove everything that you won't need. You essentially just want to keep all the paragraph tags, the actual text of the book.
 5. Run `ebukafy split` to split the big html file into multiple files with correct headers
-6. After all the xhtml files in the `EPUB/text` directory are as you want them to be, run `ebukafy generate-manifest` and `ebukafy generate-spine` to populate the manifest and spine tags in the `content.opf` file. While the manifest should be good as is, the spine needs to be reordered *in reading order*, not alphabetical as is the default (more info in the [generate-spine README](#ebukafy-generate-spine)). This is also a good time to add any extra metadata you might find useful in the metadata tag of the `content.opf` file. [Here](https://wiki.mobileread.com/wiki/Metadata#ePUB_metadata) are some examples of what you can add
-7. Manually (for now) edit the `toc.xhtml` and `toc.ncx` files. The skeleton includes an example chapter to show you the way these files should look. If you don't know anything about the internals of an epub this step will be difficult but it's easier that it sounds. Just look up 'anatomy of an epub file' and read up
-8. Optionally replace the cover image. The one provided in the skeleton is just an all black 1400 x 2100 jpg. To change it just replace the cover in the `EPUB/images` directory. Keep the name as `cover.jpg` or manually edit `content.opf` if you know what you're doing
-9. After everything is done run `ebukafy build` to build this epub folder into an actual epub file
-10. Before reading run `ebukafy epubcheck` to make sure everything within the epub is up to the specification of the epub standard
-11. To read on a kobo or kindle please use a tool like [Calibre](https://calibre-ebook.com/) to convert the book to the appropriate format (kepub and azw3 respectively)
+6. You can use `ebukafy smarten-quotes` to convert any straight quotes to curly/smart quotes
+7. After all the xhtml files in the `EPUB/text` directory are as you want them to be, run `ebukafy generate-manifest` and `ebukafy generate-spine` to populate the manifest and spine tags in the `content.opf` file. While the manifest should be good as is, the spine needs to be reordered *in reading order*, not alphabetical as is the default (more info in the [generate-spine README](#ebukafy-generate-spine)). This is also a good time to add any extra metadata you might find useful in the metadata tag of the `content.opf` file. [Here](https://wiki.mobileread.com/wiki/Metadata#ePUB_metadata) are some examples of what you can add
+8. Manually (for now) edit the `toc.xhtml` and `toc.ncx` files. The skeleton includes an example chapter to show you the way these files should look. If you don't know anything about the internals of an epub this step will be difficult but it's easier that it sounds. Just look up 'anatomy of an epub file' and read up
+9. Optionally replace the cover image. The one provided in the skeleton is just an all black 1400 x 2100 jpg. To change it just replace the cover in the `EPUB/images` directory. Keep the name as `cover.jpg` or manually edit `content.opf` if you know what you're doing
+10. After everything is done run `ebukafy build` to build this epub folder into an actual epub file
+11. Before reading run `ebukafy epubcheck` to make sure everything within the epub is up to the specification of the epub standard
+12. To read on a kobo or kindle please use a tool like [Calibre](https://calibre-ebook.com/) to convert the book to the appropriate format (kepub and azw3 respectively)
 
 # Tools
 
@@ -206,6 +207,36 @@ Note that to run any of these tools you need to precede them with `ebukafy` (e.g
                 generate-spine -i .
 
            And don't forget to manually reorder it into reading order!
+
+- ### `ebukafy smarten-quotes`
+      NAME
+           smarten-quotes -- convert straight quotes to smart quotes
+
+      SYNOPSIS
+           smarten-quotes [-h] target_file ...
+
+      DESCRIPTION
+           Online transcriptions often use straight quotes since they're easier
+           to type on the keyboard. However, books look bad if you just use
+           straight quotes so this tool, for purposes of better typography, allows 
+           you to convert them to smart quotes (aka curly quotes). Note that this
+           tool looks specifically between <p> tags, so if you have any quotes
+           outside of a <p> tag that you want to smarten, you will have to do so
+           manually.
+             Also, if your book is in a language with a different quote system 
+           you can first use this tool to convert them to the standard english 
+           ones and then do a search and replace to your language's quotes 
+           („…“, «…», »…«, etc.) using a tool like sed.
+
+           The options are as follows:
+
+           -h       Display usage statement. 
+
+      EXAMPLES
+           Say you have a bunch of text files in the text/ folder. You can use
+           this tool like so:
+
+                ebukafy smarten-quotes EPUB/text
 
 - ### `ebukafy split`
       NAME
