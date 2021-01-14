@@ -5,7 +5,8 @@
   "main": "index.js",
   "dependencies": {
     "archiver": "^5.1.0",
-    "minimist": "^1.2.5"
+    "minimist": "^1.2.5",
+    "smartquotes": "^2.3.2"
   },
   "devDependencies": {},
   "scripts": {
