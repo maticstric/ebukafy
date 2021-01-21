@@ -59,7 +59,7 @@ const getSpine = (epubDirectory) => {
       }
 
       // Make string from array
-      let spineString = '<spine tox="ncx">\n';
+      let spineString = '<spine toc="ncx">\n';
 
       for (let i = 0; i < spine.length; i++) {
         let item = spine[i];
