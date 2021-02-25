@@ -8,6 +8,7 @@ const build = require('./commands/build');
 const epubcheck = require('./commands/epubcheck');
 const generateManifest = require('./commands/generate-manifest');
 const generateSpine = require('./commands/generate-spine');
+const generateToc = require('./commands/generate-toc');
 const smartenQuotes = require('./commands/smarten-quotes');
 
 exports.createSkeleton = async (args) => { 
@@ -32,6 +33,10 @@ exports.generateManifest = async (args) => {
 
 exports.generateSpine = async (args) => { 
   await generateSpine.execute(args);
+};
+
+exports.generateToc = async (args) => { 
+  await generateToc.execute(args);
 };
 
 exports.smartenQuotes = async (args) => { 
