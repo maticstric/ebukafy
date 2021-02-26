@@ -112,8 +112,8 @@ Note that to run any of these tools you need to precede them with `ebukafy` (e.g
            epubcheck [-h] target_epub
 
       DESCRIPTION
-           epubcheck is a tool which "validates the conformance of EPUB 
-           publications against the EPUB specifications." The GitHub repository
+           epubcheck is a tool which 'validates the conformance of EPUB 
+           publications against the EPUB specifications.' The GitHub repository
            for epubcheck can be found here: https://github.com/w3c/epubcheck
            Note that this tool is written in java so you need java to run it.
            It will output any errors or just say that your epub is up to standard.
@@ -207,6 +207,61 @@ Note that to run any of these tools you need to precede them with `ebukafy` (e.g
                 generate-spine -i .
 
            And don't forget to manually reorder it into reading order!
+
+- ### `ebukafy generate-toc`
+      NAME
+           generate-toc -- generates the toc.ncx and toc.xhtml files
+
+      SYNOPSIS
+           generate-toc [-hio] epub_directory
+
+      DESCRIPTION
+           This tool generates toc.ncx and toc.xhtml files. Without the 'i'
+           option it just prints it to stdout. With the 'i' option it replaces 
+           the files in-place. This command looks at the <spine> tag in the
+           content.opf file so make sure to run generate-spine before generating
+           the table of contents.
+
+           NOTE: The titles of each chapter are set as roman numerals. If the
+           chapters in your book should not be identified by a simple roman
+           numeral (like chapter titles or short stories) you will have to 
+           manually edit the files.
+
+           The options are as follows:
+
+           -h       Display usage statement. 
+
+           -i       Instead of outputting the toc into stdout, it overwrites
+                    the tocs in the toc.xhtml and toc.ncx files, in-place.
+
+           -o       Offset value. If your book begins with a preface and you want 
+                    the actual chapter titles to start in the second entry of the 
+                    toc, use an offset value of 1. Those chapters which are
+                    skipped will be given the title 'MISSING TITLE'.
+
+      EXAMPLES
+           Note that the 'epub directory' is actually the parent directory of the
+           'EPUB' directory. In other words, the command should be run in this
+           directory:
+           
+           epub-directory/
+              mimetype
+              META-INF/
+                container.xml
+              EPUB/
+                [etc]
+
+           Say you have a book with a titlepage, preface, and then however many
+           chapters. You can generate the toc files like so:
+           
+                generate-toc -i -o 2 .
+
+           The offset of 2 will gurantee that the roman numeral titles will only
+           start on the second entry of the toc, since the first two (titlepage
+           and preface) aren't actual chapters.
+
+           And make sure that the spine in the content.opf file is complete
+           before you run generate-toc!
 
 - ### `ebukafy smarten-quotes`
       NAME
