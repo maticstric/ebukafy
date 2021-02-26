@@ -8,8 +8,9 @@ const parseArgs = require('minimist');
 const replaceInFile = require('../utils/replace-in-file').replaceInFile;
 const arabicToRoman = require('../utils/arabic-to-roman').arabicToRoman;
 
-const USAGE = 'usage: generate-toc [-hi] epub_directory';
+const USAGE = 'usage: generate-toc [-hio] epub_directory';
 const ERR_STRING = 'Error in \'generate-toc\':';
+const MISSING_TITLE_STRING = 'MISSING TITLE';
 
 const TOC_NCX_ITEM =
 `	<navPoint id="navpoint-ARABIC" playOrder="ARABIC">
@@ -33,8 +34,10 @@ exports.execute = async (args) => {
     usage();
   }
 
-  let tocNcx = await getTocNcx(epubDirectory);
-  let tocXhtml = await getTocXhtml(epubDirectory);
+  let offset = parseInt(args['offset']);
+
+  let tocNcx = await getTocNcx(epubDirectory, offset);
+  let tocXhtml = await getTocXhtml(epubDirectory, offset);
 
   if (args['in-place']) {
     inPlaceToc(epubDirectory, tocNcx, tocXhtml);   
@@ -62,7 +65,7 @@ const inPlaceToc = async (epubDirectory, tocNcx, tocXhtml) => {
   await replaceInFile(tocXhtmlPath, [tocXhtmlRegex], [tocXhtml]);
 }
 
-const getTocXhtml = async (epubDirectory) => {
+const getTocXhtml = async (epubDirectory, offset) => {
   let spine = await getSpine(epubDirectory);
 
   let regex = /<itemref\ idref=\"(.*)\"\/>/g
@@ -72,8 +75,18 @@ const getTocXhtml = async (epubDirectory) => {
 
   for (let i = 0; i < spineItems.length; i++) {
     let tocItemName = spineItems[i][1]; // Get capture groups from each
+    let tocItem = TOC_XHTML_ITEM;
 
-    tocItem = TOC_XHTML_ITEM.replace('ROMAN', arabicToRoman(i + 1));
+    if (offset) {
+      if (i < offset) {
+        tocItem = tocItem.replace('ROMAN', MISSING_TITLE_STRING);
+      } else {
+        tocItem = tocItem.replace('ROMAN', arabicToRoman(i + 1 - offset));
+      }
+    } else {
+      tocItem = tocItem.replace('ROMAN', arabicToRoman(i + 1));
+    }
+
     tocItem = tocItem.replace('SOURCE', tocItemName);
 
     toc += tocItem + '\n';
@@ -84,7 +97,7 @@ const getTocXhtml = async (epubDirectory) => {
   return toc;
 }
 
-const getTocNcx = async (epubDirectory) => {
+const getTocNcx = async (epubDirectory, offset) => {
   let spine = await getSpine(epubDirectory);
 
   let regex = /<itemref\ idref=\"(.*)\"\/>/g
@@ -94,9 +107,19 @@ const getTocNcx = async (epubDirectory) => {
 
   for (let i = 0; i < spineItems.length; i++) {
     let tocItemName = spineItems[i][1]; // Get capture groups from each
+    let tocItem = TOC_NCX_ITEM;;
 
-    let tocItem = TOC_NCX_ITEM.replace(/ARABIC/g, i + 1);
-    tocItem = tocItem.replace('ROMAN', arabicToRoman(i + 1));
+    if (offset) {
+      if (i < offset) {
+        tocItem = tocItem.replace('ROMAN', MISSING_TITLE_STRING);
+      } else {
+        tocItem = tocItem.replace('ROMAN', arabicToRoman(i + 1 - offset));
+      }
+    } else {
+      tocItem = tocItem.replace('ROMAN', arabicToRoman(i + 1));
+    }
+
+    tocItem = tocItem.replace(/ARABIC/g, i + 1);
     tocItem = tocItem.replace('SOURCE', tocItemName);
 
     toc += tocItem + '\n';
@@ -130,12 +153,16 @@ const processArgs = (args) => {
   args = parseArgs(args, {
     alias: {
       'help': 'h',
-      'in-place': 'i'
+      'in-place': 'i',
+      'offset': 'o'
     },
     boolean: [
       'help',
       'in-place'
-    ]  
+    ],
+    string: [
+      'offset'
+    ]
   });
 
   if (args.help) {
