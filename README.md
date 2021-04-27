@@ -17,14 +17,14 @@ Normal use of `ebukafy` would look something like this:
 1. Download some html that you want to convert into an ebook with a tool like `wget`
 2. Run `ebukafy create-skeleton` to create a skeleton of an epub directory
 3. Put the downloaded html into the `EPUB/text` directory of the skeleton
-4. Since most html files online will have a bunch of cruft at the beginning of the book, at the end of the book, and between the chapters, remove everything that you won't need. You essentially just want to keep all the paragraph tags, the actual text of the book.
+4. Since most html files online will have a bunch of cruft at the beginning of the book, at the end of the book, and between the chapters, remove everything that you won't need. You essentially just want to keep all the paragraph tags: the actual text of the book
 5. Run `ebukafy split` to split the big html file into multiple files with correct headers
 6. You can use `ebukafy smarten-quotes` to convert any straight quotes to curly/smart quotes
 7. After all the xhtml files in the `EPUB/text` directory are as you want them to be, run `ebukafy generate-manifest` and `ebukafy generate-spine` to populate the manifest and spine tags in the `content.opf` file. While the manifest should be good as is, the spine needs to be reordered *in reading order*, not alphabetical as is the default (more info in the [generate-spine README](#ebukafy-generate-spine)). This is also a good time to add any extra metadata you might find useful in the metadata tag of the `content.opf` file. [Here](https://wiki.mobileread.com/wiki/Metadata#ePUB_metadata) are some examples of what you can add
-8. Run `ebukafy generate-toc` to generate the table of contents from the spine done in the previous step.
+8. Run `ebukafy generate-toc` to generate the table of contents from the spine done in the previous step
 9. Optionally replace the cover image. The one provided in the skeleton is just an all black 1400 x 2100 jpg. To change it just replace the cover in the `EPUB/images` directory. Keep the name as `cover.jpg` or manually edit `content.opf` if you know what you're doing
 10. After everything is done run `ebukafy build` to build this epub folder into an actual epub file
-11. Before reading run `ebukafy epubcheck` to make sure everything within the epub is up to the specification of the epub standard
+11. Before reading, run `ebukafy epubcheck` to make sure everything within the epub is up to the specification of the epub standard and fix any errors
 12. To read on a kobo or kindle please use a tool like [Calibre](https://calibre-ebook.com/) to convert the book to the appropriate format (kepub and azw3 respectively)
 
 # Tools
@@ -222,10 +222,9 @@ Note that to run any of these tools you need to precede them with `ebukafy` (e.g
            content.opf file so make sure to run generate-spine before generating
            the table of contents.
 
-           NOTE: The titles of each chapter are set as roman numerals. If the
-           chapters in your book should not be identified by a simple roman
-           numeral (like chapter titles or short stories) you will have to 
-           manually edit the files.
+           NOTE: The titles of each chapter are set as whatever is in the <title>
+           tag. If the <title> tag is not present, the toc will simply say
+           "MISSING TITLE".
 
            The options are as follows:
 
@@ -233,11 +232,6 @@ Note that to run any of these tools you need to precede them with `ebukafy` (e.g
 
            -i       Instead of outputting the toc into stdout, it overwrites
                     the tocs in the toc.xhtml and toc.ncx files, in-place.
-
-           -o       Offset value. If your book begins with a preface and you want 
-                    the actual chapter titles to start in the second entry of the 
-                    toc, use an offset value of 1. Those chapters which are
-                    skipped will be given the title 'MISSING TITLE'.
 
       EXAMPLES
            Note that the 'epub directory' is actually the parent directory of the
@@ -251,14 +245,9 @@ Note that to run any of these tools you need to precede them with `ebukafy` (e.g
               EPUB/
                 [etc]
 
-           Say you have a book with a titlepage, preface, and then however many
-           chapters. You can generate the toc files like so:
+           You can generate the toc files like so:
            
-                generate-toc -i -o 2 .
-
-           The offset of 2 will gurantee that the roman numeral titles will only
-           start on the second entry of the toc, since the first two (titlepage
-           and preface) aren't actual chapters.
+                generate-toc -i .
 
            And make sure that the spine in the content.opf file is complete
            before you run generate-toc!
@@ -291,7 +280,7 @@ Note that to run any of these tools you need to precede them with `ebukafy` (e.g
            Say you have a bunch of text files in the text/ folder. You can use
            this tool like so:
 
-                ebukafy smarten-quotes EPUB/text
+                ebukafy smarten-quotes EPUB/text/*
 
 - ### `ebukafy split`
       NAME
