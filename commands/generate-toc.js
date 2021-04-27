@@ -8,21 +8,21 @@ const parseArgs = require('minimist');
 const replaceInFile = require('../utils/replace-in-file').replaceInFile;
 const arabicToRoman = require('../utils/arabic-to-roman').arabicToRoman;
 
-const USAGE = 'usage: generate-toc [-hio] epub_directory';
+const USAGE = 'usage: generate-toc [-hi] epub_directory';
 const ERR_STRING = 'Error in \'generate-toc\':';
 const MISSING_TITLE_STRING = 'MISSING TITLE';
 
 const TOC_NCX_ITEM =
 `	<navPoint id="navpoint-ARABIC" playOrder="ARABIC">
 		<navLabel>
-			<text>ROMAN</text>
+			<text>TITLE</text>
 		</navLabel>
-		<content src="text/SOURCE"/>
+		<content src="SOURCE"/>
 	</navPoint>`
 
 const TOC_XHTML_ITEM =
 `	<li>
-		<a href="text/SOURCE">ROMAN</a>
+		<a href="SOURCE">TITLE</a>
 	</li>`
 
 exports.execute = async (args) => {
@@ -34,10 +34,8 @@ exports.execute = async (args) => {
     usage();
   }
 
-  let offset = parseInt(args['offset']);
-
-  let tocNcx = await getTocNcx(epubDirectory, offset);
-  let tocXhtml = await getTocXhtml(epubDirectory, offset);
+  let tocNcx = await getTocNcx(epubDirectory);
+  let tocXhtml = await getTocXhtml(epubDirectory);
 
   if (args['in-place']) {
     inPlaceToc(epubDirectory, tocNcx, tocXhtml);   
@@ -47,6 +45,67 @@ exports.execute = async (args) => {
     console.log('\ntoc.xhtml\n--------');
     console.log(tocXhtml);
   }
+}
+
+const getTocXhtml = async (epubDirectory) => {
+  let spine = await getSpine(epubDirectory);
+  let spineItems = await getSpineItems(spine);
+
+  let toc = '<ol>\n';
+
+  for (let i = 0; i < spineItems.length; i++) {
+    let spineItem = spineItems[i][0]; // [0] = full match
+
+    let href = await getHrefFromSpineItem(epubDirectory, spineItem);
+    let title = await getTitleFromHref(epubDirectory, href);
+
+    let tocItem = TOC_XHTML_ITEM;
+
+    if (title) {
+      tocItem = tocItem.replace('TITLE', title);
+    } else {
+      tocItem = tocItem.replace('TITLE', MISSING_TITLE_STRING);
+    }
+
+    tocItem = tocItem.replace('SOURCE', href);
+
+    toc += tocItem + '\n';
+  }
+
+  toc += '</ol>';
+
+  return toc;
+}
+
+const getTocNcx = async (epubDirectory) => {
+  let spine = await getSpine(epubDirectory);
+  let spineItems = await getSpineItems(spine);
+
+  let toc = '<navMap id="navmap">\n';
+
+  for (let i = 0; i < spineItems.length; i++) {
+    let spineItem = spineItems[i][0]; // [0] = full match
+
+    let href = await getHrefFromSpineItem(epubDirectory, spineItem);
+    let title = await getTitleFromHref(epubDirectory, href);
+
+    let tocItem = TOC_NCX_ITEM;
+
+    if (title) {
+      tocItem = tocItem.replace('TITLE', title);
+    } else {
+      tocItem = tocItem.replace('TITLE', MISSING_TITLE_STRING);
+    }
+
+    tocItem = tocItem.replace('SOURCE', href);
+    tocItem = tocItem.replace(/ARABIC/g, i + 1);
+
+    toc += tocItem + '\n';
+  }
+
+  toc += '</navMap>';
+
+  return toc;
 }
 
 const inPlaceToc = async (epubDirectory, tocNcx, tocXhtml) => {
@@ -65,69 +124,52 @@ const inPlaceToc = async (epubDirectory, tocNcx, tocXhtml) => {
   await replaceInFile(tocXhtmlPath, [tocXhtmlRegex], [tocXhtml]);
 }
 
-const getTocXhtml = async (epubDirectory, offset) => {
-  let spine = await getSpine(epubDirectory);
+const getSpineItems = (spine) => {
+  let spineItemRegex = /<itemref.*?\/>/g
+  let spineItems = Array.from(spine.matchAll(spineItemRegex));
 
-  let regex = /<itemref\ idref=\"(.*)\"\/>/g
-  let spineItems = Array.from(spine.matchAll(regex));
-
-  let toc = '<ol>\n';
-
-  for (let i = 0; i < spineItems.length; i++) {
-    let tocItemName = spineItems[i][1]; // Get capture groups from each
-    let tocItem = TOC_XHTML_ITEM;
-
-    if (offset) {
-      if (i < offset) {
-        tocItem = tocItem.replace('ROMAN', MISSING_TITLE_STRING);
-      } else {
-        tocItem = tocItem.replace('ROMAN', arabicToRoman(i + 1 - offset));
-      }
-    } else {
-      tocItem = tocItem.replace('ROMAN', arabicToRoman(i + 1));
-    }
-
-    tocItem = tocItem.replace('SOURCE', tocItemName);
-
-    toc += tocItem + '\n';
-  }
-
-  toc += '</ol>';
-
-  return toc;
+  return spineItems;
 }
 
-const getTocNcx = async (epubDirectory, offset) => {
-  let spine = await getSpine(epubDirectory);
+const getHrefFromSpineItem = async (epubDirectory, spineItem) => {
+  let manifest = await getManifest(epubDirectory);
 
-  let regex = /<itemref\ idref=\"(.*)\"\/>/g
-  let spineItems = Array.from(spine.matchAll(regex));
+  let idrefRegex = /<itemref\ idref=\"(.*)\"\/>/
+  let idref = spineItem.match(idrefRegex)[1]; // [1] = first match
+  idref = escapeRegExp(idref);
 
-  let toc = '<navMap id="navmap">\n';
+  let manifestItemRegex = new RegExp('<item.*id=\"' + idref + '\".*\/>');
+  let manifestItem = manifest.match(manifestItemRegex)[0]; // [0] = full match
 
-  for (let i = 0; i < spineItems.length; i++) {
-    let tocItemName = spineItems[i][1]; // Get capture groups from each
-    let tocItem = TOC_NCX_ITEM;;
+  let manifestHrefRegex = /href=\"(.*?)\"/;
+  let manifestHref = manifestItem.match(manifestHrefRegex)[1]; // [1] = first match
 
-    if (offset) {
-      if (i < offset) {
-        tocItem = tocItem.replace('ROMAN', MISSING_TITLE_STRING);
-      } else {
-        tocItem = tocItem.replace('ROMAN', arabicToRoman(i + 1 - offset));
+  return manifestHref;
+}
+
+const getTitleFromHref = (epubDirectory, href) => {
+  let filePath = path.resolve(epubDirectory, 'EPUB', href);
+
+  return new Promise((resolve, reject) => {
+    fs.readFile(filePath, 'utf8', function(err, data) {
+      if(err) {
+        console.error(`\n${ERR_STRING} ${err.message}`);
+        usage();
       }
-    } else {
-      tocItem = tocItem.replace('ROMAN', arabicToRoman(i + 1));
-    }
 
-    tocItem = tocItem.replace(/ARABIC/g, i + 1);
-    tocItem = tocItem.replace('SOURCE', tocItemName);
+      let regex = /<title>(.*)<\/title>/;
+       
+      let title = data.match(regex);
 
-    toc += tocItem + '\n';
-  }
+      if (title) {
+        title = title[1]; // [1] = first match
+      } else {
+        title = MISSING_TITLE_STRING;
+      }
 
-  toc += '</navMap>';
-
-  return toc;
+      resolve(title);
+    });
+  });
 }
 
 const getSpine = (epubDirectory) => {
@@ -149,19 +191,39 @@ const getSpine = (epubDirectory) => {
   });
 }
 
+const getManifest = (epubDirectory) => {
+  let contentOpfPath = path.resolve(epubDirectory, 'EPUB', 'content.opf');
+
+  return new Promise((resolve, reject) => {
+    fs.readFile(contentOpfPath, 'utf8', function(err, data) {
+      if(err) {
+        console.error(`\n${ERR_STRING} ${err.message}`);
+        usage();
+      }
+
+      let regex = /<manifest>(.*)<\/manifest>/s;
+       
+      let manifest = data.match(regex)[1]; // The [1] means the first capture group
+
+      resolve(manifest);
+    });
+  });
+}
+
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions#escaping
+const escapeRegExp = (string) => {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
+}
+
 const processArgs = (args) => {
   args = parseArgs(args, {
     alias: {
       'help': 'h',
-      'in-place': 'i',
-      'offset': 'o'
+      'in-place': 'i'
     },
     boolean: [
       'help',
       'in-place'
-    ],
-    string: [
-      'offset'
     ]
   });
 
